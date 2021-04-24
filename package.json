@@ -1,0 +1,22 @@
+{
+  "name": "rhythm-project",
+  "version": "1.0.0",
+  "description": "This is my final project for COMP 426",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckong6953/rhythm-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ckong6953/rhythm-project/issues"
+  },
+  "homepage": "https://github.com/ckong6953/rhythm-project#readme",
+  "dependencies": {
+    "browser-sync": "^2.26.14"
+  }
+}
