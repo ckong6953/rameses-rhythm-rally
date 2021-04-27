@@ -50,6 +50,18 @@ const renderGame = function () {
     const gameState =
     `<div class = "game-container">
         <div class = "key-container">
+            <div class="key" id="left-key">
+                <p>&#8592</p>
+            </div>
+            <div class="key" id="up-key">
+                <p>&#8593</p>
+            </div>
+            <div class="key" id="down-key">
+                <p>&#8595</p>
+            </div>
+            <div class="key" id="right-key">
+                <p>&#8594</p>
+            </div>
         </div>
         <div class = "track-container">
         </div>

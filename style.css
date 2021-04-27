@@ -61,11 +61,43 @@ html{
     position: absolute;
     width: 100%;
     height: 1.5rem;
-    bottom: 0;
+    visibility: hidden;
 }
 
 @keyframes moveUp {
-    0% {bottom: 0%}
+    0% {bottom: 0%; visibility: visible}
     98% {bottom: 100%; opactiy: 1}
-    100% {bottom: 105%}
+    100% {bottom: 101%; visibility: hidden;}
+}
+
+.key-container{
+    display: flex;
+    flex: 0 0 15%;
+}
+
+.key{
+    flex: 0 0 calc(100% / 4);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+    position: relative;
+    font-size: 500%;
+    color: white;
+}
+
+
+#left-key{
+    background: #C24B99;
+}
+
+#up-key{
+    background: #13FA05;
+}
+
+#down-key{
+    background: #01FFFF;
+}
+
+#right-key{
+    background: #F9393F;
 }
