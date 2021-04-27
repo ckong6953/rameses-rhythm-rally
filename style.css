@@ -2,20 +2,6 @@ html{
     background-color: #31343D;
 }
 
-#main-menu{
-    text-align: center;
-    font-size: xx-large;
-    position: absolute;
-    width: 30%;
-    height: 50%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #6e7077;
-    color: white;
-    overflow: auto;
-}
-
 .main-menu-button{
     background-color: white;
     margin: auto;
@@ -77,8 +63,6 @@ html{
 
 .key{
     flex: 0 0 calc(100% / 4);
-    border-left: 1px solid black;
-    border-right: 1px solid black;
     text-align: center;
     position: relative;
     font-size: 500%;
@@ -100,4 +84,45 @@ html{
 
 #right-key{
     background: #F9393F;
+}
+
+.menu-container{
+    display: flex;
+    flex: 0 0 calc(100% /2);
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 10rem;
+}
+
+.menu-button{
+    width: 60%;
+    height: 10%;
+    margin: 3px;
+    font-size: 80%;
+}
+
+#about-tag{
+    font-size: 1rem;
+    width: 40%;
+    margin: auto;
+}
+
+#author-tag{
+    font-size: 2.5rem;
+}
+
+#game-title{
+    color: #4B9CD3;
+}
+
+.game-menu, .leaderboard-menu, .controls-menu{
+    opacity: 0;
+    margin: 0 auto;
+    width: 80%;
+}
+
+.initial-view{
+    text-align: center;
+    margin: 0 auto;
 }

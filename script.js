@@ -1,54 +1,69 @@
-// The function called to render the main menu for the game.
-const renderMainMenu = function () {
-    const mainMenu =
-        `<div class="card" id="main-menu">
-        <header class="card-header>
-            <p class="card-header-title">
-                Rameses' Rhythm Rally
-            </p>
-        </header>
-        <div class="card-content" id="main-menu-content">
-            <div class="content">
-                <button class="button main-menu-button" id="play-button">Play Game</button>
-                <button class="button main-menu-button" id="leaderboard-button">Leaderboard</button>
-                <button class="button main-menu-button" id="about-button">About</button>
-            </div>
-        </div>
-    </div>`;
-    return mainMenu;
+/**
+ * Course: COMP 426
+ * Assignment: Final Project
+ * Author: Chris Kong
+ *
+ *  This is the final project for the COMP 426 course I was enrolled in (Spring 2021).
+ *  The general gist is that this is an rhythm-based game that is coded as a web app.
+ * 
+ */
+
+// These are a list of global variables that will be utilized throughout the game.
+let isHolding = {
+    left: false,
+    up: false,
+    down: false,
+    right: false,
 }
-
-// This is function that renders the description/controls of the game. 
-const renderDescription = function () {
-    const description =
-        `<div class="card-content" id="main-menu-content">
-        <div class="content">
-            <p> It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
-            <button class="button main-menu-button" id="back-button">Back</button>
-        </div>
-    </dv>`;
-
-    $("#main-menu-content").replaceWith(description);
+let hits = {
+    perfect: 0,
+    good: 0, 
+    okay: 0,
+    miss: 0,
 }
-
-
+const score_multiplier = {
+    combo30: 1.05,
+    combo50: 1.10,
+    perfect: 1,
+    good: 0.8,
+    bad: 0.5,
+    miss: 0,
+} 
+let isPlaying = false;
+let combo = 0;
+let maxCombo = 0;
+let score = 0;
+let startTime = 0.0;
 
 // This is the main function that renders the initial game and handles all event handlers. 
 const loadGame = function () {
     const $root = $("#root");
-    $root.append(renderMainMenu());
-    $root.on("click", "#play-button", renderGame);
-    $root.on("click", "#about-button", renderDescription);
-    $root.on("click", "#back-button", function () {
-        $('#main-menu').replaceWith(renderMainMenu());
-    });
-    // $root.on("click","#leaderboard-button", renderLeaderboard);
+    $root.append(renderInitialScreen())
+    renderNotes();
+    $root.on("click","#play-button", renderGameStart);
+    $root.on("click","#leaderboard-button", renderLeaderboard);
+    $root.on("click","#controls-button", renderControls);
+    $root.on("click", "#back-button", renderControlsBackMenu);
+    $root.on("click","#back-button", renderLeaderboardBackMenu)
+    $root.on("click","#back-button", renderGameBackMenu)
 }
 
-// When the user would like to play game, this renders the initial state of the game as in the board and the notes to be played.
-const renderGame = function () {
-    const gameState =
-    `<div class = "game-container">
+// Renders the main menu and game.
+const renderInitialScreen = function (){
+    const gameScreen =
+    `<div class="menu-container">
+        <div class="initial-view">
+            <h1 id="game-title">&#9835 Rameses' Rhythm Rally &#9835 </h1>
+            <p id="author-tag"> by Chris Kong </p>
+            <div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+            </div>
+        </div>
+    </div>
+    <div class = "game-container">
         <div class = "key-container">
             <div class="key" id="left-key">
                 <p>&#8592</p>
@@ -64,13 +79,104 @@ const renderGame = function () {
             </div>
         </div>
         <div class = "track-container">
+            <div class="track"></div>
+            <div class="track"></div>
+            <div class="track"></div>
+            <div class="track"></div>
         </div>
     </div>`;
-    $("#main-menu").replaceWith(gameState);
-    renderNotes();
+    return gameScreen;
 }
 
+// This will render the leaderboard of the game. Not yet implemented but will contact firebase to allow user
+// to see who is leading, but they can also sign-up and register their score. 
+const renderLeaderboard = function(){
+    $(".main-menu").fadeOut("slow", function(){
+        $(".main-menu").replaceWith(
+            `<div class = "leaderboard-menu">
+            <p id="leaderboard-tag">Will be implemented soon</p>
+            <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+            </div>`);
+        $(".leaderboard-menu").fadeTo("slow",1);
+    });
+}
+
+// This will render the controls of the game as well as a back button that will take the user back to the main menu
+const renderControls = function(){
+    $(".main-menu").fadeOut("slow", function(){
+        $(".main-menu").replaceWith(
+            `<div class = "controls-menu">
+            <p id="controls-tag"> Use the arrow keys to hit the note when it approaches the keys at the top of the screen!</p>
+            <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+        </div>`);
+        $(".controls-menu").fadeTo("slow",1);
+    });
+}
+
+// This will render that start such that the notes will begin to fall and the user will need to start
+// AKA this changes the animation-play-state of the notes from "paused" to "running" 
+const renderGameStart = function (){
+    $("#game-title").fadeOut("slow");
+    $("#author-tag").fadeOut("slow");
+    $(".main-menu").fadeOut("slow", function(){
+        $(".main-menu").replaceWith(`<div class="game-menu">
+        <h1 id="game-title">TIME</h1>
+        <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+        <button type="button" class="menu-button" id="reset-button">Reset</button>
+        </div>`);
+        $(".game-menu").fadeTo("slow",1);
+        $(".note").css("animation-play-state","running");
+    });
+}
+
+// Renders back the main menu if the user wishes to return from the game to the main menu.
+const renderGameBackMenu = function (){
+    $(".game-menu").fadeOut("slow", function(){
+        $("#game-title").fadeIn("slow");
+        $("#author-tag").fadeIn("slow", function(){
+            $(".game-menu").replaceWith(
+                `<div class="main-menu">
+                    <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                    <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                    <button type="button" class="menu-button" id="controls-button">Controls</button>
+                    <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+                </div>`);
+            $(".main-menu").fadeIn("slow");
+        });
+    });
+}
+
+// Returns the user back to the main menu if they would like to return from the leaderboard.
+const renderLeaderboardBackMenu = function (){
+    $(".leaderboard-menu").fadeOut("slow", function(){
+        $(".leaderboard-menu").replaceWith(
+            `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+            </div>`);
+        $(".main-menu").fadeTo("slow",1);
+    });
+}
+
+// Returns the user back to the main menu if they would like to return from the controls. 
+const renderControlsBackMenu = function (){
+    $(".controls-menu").fadeOut("slow", function(){
+        $(".controls-menu").replaceWith(
+            `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+            </div>`);
+        $(".main-menu").fadeTo("slow",1);
+    });
+}
+
+// Will render all the notes of the song first with them being initiall hidden but all the animations have been pre-rendered. 
 const renderNotes = function () {
+    $('.track-container').empty();
     song.tracks.forEach(function (track, trackIndex) {
         const $addTrack =
             $(`<div class="track" id="track-${trackIndex}">
@@ -84,12 +190,17 @@ const renderNotes = function () {
                 "animation-timing-function": "linear",
                 "animation-duration": `${note.duration}` + "s",
                 "animation-delay": `${note.delay}` + "s",
-                "animation-play-state": "running",
+                "animation-play-state": "paused",
             });
             $addTrack.append($addNote);
         });
         $(".track-container").append($addTrack);
     });
+}
+
+const startTimer = function (){
+    let timerDisplay = `<div class=timmer></div>`;
+    
 }
 
 // On window load, this will render the initial state. 
