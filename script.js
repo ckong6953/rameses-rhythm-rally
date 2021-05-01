@@ -45,7 +45,9 @@ const loadGame = function () {
     $root.on("click","#controls-button", renderControls);
     $root.on("click", "#back-button", renderControlsBackMenu);
     $root.on("click","#back-button", renderLeaderboardBackMenu)
-    $root.on("click","#back-button", renderGameBackMenu)
+    $root.on("click","#back-button", renderGameBackMenu);
+    $root.on("click", "#pause-button", pauseNotes);
+    $root.on("click", "#resume-button", resumeNotes);
 }
 
 // Renders the main menu and game.
@@ -120,12 +122,14 @@ const renderGameStart = function (){
     $("#author-tag").fadeOut("slow");
     $(".main-menu").fadeOut("slow", function(){
         $(".main-menu").replaceWith(`<div class="game-menu">
-        <h1 id="game-title">TIME</h1>
+        <h1 id="game-time">TIME</h1>
         <button type="button" class="menu-button" id="back-button">Back to Menu</button>
-        <button type="button" class="menu-button" id="reset-button">Reset</button>
+        <button type="button" class="menu-button" id="pause-button">Pause</button>
         </div>`);
         $(".game-menu").fadeTo("slow",1);
         $(".note").css("animation-play-state","running");
+
+        startTimer(song.duration);
     });
 }
 
@@ -144,6 +148,7 @@ const renderGameBackMenu = function (){
             $(".main-menu").fadeIn("slow");
         });
     });
+    $(".note").fadeOut("slow", renderNotes);
 }
 
 // Returns the user back to the main menu if they would like to return from the leaderboard.
@@ -198,8 +203,35 @@ const renderNotes = function () {
     });
 }
 
-const startTimer = function (){
-    let timerDisplay = `<div class=timmer></div>`;
+const pauseNotes = function (){
+    $(".note").css("animation-play-state","paused");
+    $("#pause-button").replaceWith(`<button type="button" class="menu-button" id="resume-button">Resume</button>`);
+}
+
+const resumeNotes = function(){
+    $(".note").css("animation-play-state","running");
+    $("#resume-button").replaceWith(`<button type="button" class="menu-button" id="pause-button">Pause</button>`);
+}
+
+const startTimer = function (duration){
+    let $timerDisplay = $(`<div class=timer></div>`);
+    let timeDuration = duration;
+    let minutes = 0;
+    let seconds = 0;
+
+    $('#game-time').replaceWith($timerDisplay);
+
+    const songDuration = setInterval(function(){
+        minutes = Math.floor(timeDuration / 60);
+        seconds = timeDuration % 60;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        const newTime = minutes + ":" + seconds;
+        $timerDisplay.text(newTime);
+        if (--timeDuration < 0){
+            clearInterval(songDuration);
+        }
+    },1000);
     
 }
 
