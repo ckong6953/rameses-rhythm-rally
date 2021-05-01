@@ -130,6 +130,7 @@ const renderGameStart = function (){
         $(".note").css("animation-play-state","running");
 
         startTimer(song.duration);
+        document.getElementById("audio").play();
     });
 }
 
@@ -149,6 +150,8 @@ const renderGameBackMenu = function (){
         });
     });
     $(".note").fadeOut("slow", renderNotes);
+    document.getElementById('audio').pause();
+    document.getElementById('audio').currentTime = 0;
 }
 
 // Returns the user back to the main menu if they would like to return from the leaderboard.
@@ -206,11 +209,13 @@ const renderNotes = function () {
 const pauseNotes = function (){
     $(".note").css("animation-play-state","paused");
     $("#pause-button").replaceWith(`<button type="button" class="menu-button" id="resume-button">Resume</button>`);
+    document.getElementById("audio").pause();
 }
 
 const resumeNotes = function(){
     $(".note").css("animation-play-state","running");
     $("#resume-button").replaceWith(`<button type="button" class="menu-button" id="pause-button">Pause</button>`);
+    document.getElementById("audio").play();
 }
 
 const startTimer = function (duration){
