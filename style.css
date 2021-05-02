@@ -126,3 +126,10 @@ html{
     text-align: center;
     margin: 0 auto;
 }
+
+.ingame-button{
+    width: 300px;
+    height: 10%;
+    margin: 3px;
+    font-size: 80%;
+}

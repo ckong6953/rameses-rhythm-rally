@@ -28,7 +28,8 @@ const score_multiplier = {
     good: 0.8,
     bad: 0.5,
     miss: 0,
-} 
+}
+let isPaused = false; 
 let isPlaying = false;
 let combo = 0;
 let maxCombo = 0;
@@ -122,9 +123,9 @@ const renderGameStart = function (){
     $("#author-tag").fadeOut("slow");
     $(".main-menu").fadeOut("slow", function(){
         $(".main-menu").replaceWith(`<div class="game-menu">
-        <h1 id="game-time">TIME</h1>
-        <button type="button" class="menu-button" id="back-button">Back to Menu</button>
-        <button type="button" class="menu-button" id="pause-button">Pause</button>
+        <h1 class="timer"></h1>
+        <button type="button" class="ingame-button" id="back-button">Back to Menu</button>
+        <button type="button" class="ingame-button" id="pause-button">Pause</button>
         </div>`);
         $(".game-menu").fadeTo("slow",1);
         $(".note").css("animation-play-state","running");
@@ -149,9 +150,11 @@ const renderGameBackMenu = function (){
             $(".main-menu").fadeIn("slow");
         });
     });
-    $(".note").fadeOut("slow", renderNotes);
+    $(".note").fadeOut("slow");
+    renderNotes();
     document.getElementById('audio').pause();
     document.getElementById('audio').currentTime = 0;
+    isPaused = false;
 }
 
 // Returns the user back to the main menu if they would like to return from the leaderboard.
@@ -208,36 +211,108 @@ const renderNotes = function () {
 
 const pauseNotes = function (){
     $(".note").css("animation-play-state","paused");
-    $("#pause-button").replaceWith(`<button type="button" class="menu-button" id="resume-button">Resume</button>`);
+    $("#pause-button").replaceWith(`<button type="button" class="ingame-button" id="resume-button">Resume</button>`);
     document.getElementById("audio").pause();
+    isPaused = true;
 }
 
 const resumeNotes = function(){
     $(".note").css("animation-play-state","running");
-    $("#resume-button").replaceWith(`<button type="button" class="menu-button" id="pause-button">Pause</button>`);
+    $("#resume-button").replaceWith(`<button type="button" class="ingame-button" id="pause-button">Pause</button>`);
     document.getElementById("audio").play();
+    isPaused = false;
 }
 
 const startTimer = function (duration){
-    let $timerDisplay = $(`<div class=timer></div>`);
+    startTime = Date.now();
+    let $timer = $('.timer');
     let timeDuration = duration;
     let minutes = 0;
     let seconds = 0;
 
-    $('#game-time').replaceWith($timerDisplay);
-
     const songDuration = setInterval(function(){
-        minutes = Math.floor(timeDuration / 60);
-        seconds = timeDuration % 60;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        const newTime = minutes + ":" + seconds;
-        $timerDisplay.text(newTime);
-        if (--timeDuration < 0){
-            clearInterval(songDuration);
+        if(!isPaused){
+            minutes = Math.floor(timeDuration / 60);
+            seconds = timeDuration % 60;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            const newTime = minutes + ":" + seconds;
+            $timer.text(newTime);
+            timeDuration--;
+            if (timeDuration < 0){
+                clearInterval(songDuration);
+            }
         }
     },1000);
-    
+    calculateMiss();
+    handleKeys();
+}
+
+const handleKeys = function (){
+    $(document).on("keydown",function(keyEvent){
+        let keyPressed = findKeyIndex(keyEvent.key);
+        if (!isPaused && $(`#track-${keyPressed}`).children().length >0){
+            calculateHit(keyPressed);
+        }
+    });
+}
+
+// Helper method to determine what key pressed corresponds to song object. 
+const findKeyIndex = function (keyPressed){
+    if (keyPressed === "ArrowLeft"){
+        return 0;
+    }
+    else if (keyPressed === "ArrowUp"){
+        return 1;
+    }
+    else if (keyPressed === "ArrowDown"){
+        return 2;
+    }
+    else{
+        return 3;
+    }
+} 
+
+// Used to catch all missed notes within the game
+const calculateMiss = function (){
+    $(`.track-container`).on("animationend", function (event){
+        console.log(event.target.id.charAt(5));
+        updateNextNote(event.target.id.charAt(5));
+        event.target.remove();
+    });
+}
+
+// Used to determine various properties of the user's action. 
+const calculateHit = function (keyIndex){
+    const timeCalc = (Date.now() - startTime) / 1000;
+    const nextNoteIndex = song.tracks[keyIndex].next;
+    const nextNote = song.tracks[keyIndex].notes[nextNoteIndex];
+    const perfectTime = nextNote.duration + nextNote.delay;
+    const accuracy = Math.abs(timeCalc - perfectTime);
+
+    if (accuracy > (nextNote.duration)/4){
+        return;
+    }
+
+    console.log(judgeHitPrecision(accuracy));
+    $(`#track-${keyIndex}`).children(`#note-${nextNoteIndex}`).remove();
+    updateNextNote(keyIndex);
+}
+
+const judgeHitPrecision = function (accuracy){
+    if (accuracy < 0.1) {
+        return 'perfect';
+      } else if (accuracy < 0.2) {
+        return 'good';
+      } else if (accuracy < 0.3) {
+        return 'bad';
+      } else {
+        return 'miss';
+    }
+}
+
+const updateNextNote = function (keyIndex){
+    song.tracks[keyIndex].next++;
 }
 
 // On window load, this will render the initial state. 
