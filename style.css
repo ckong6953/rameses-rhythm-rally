@@ -117,7 +117,7 @@ html{
     color: #4B9CD3;
 }
 
-.game-menu, .leaderboard-menu, .controls-menu{
+.leaderboard-menu, .controls-menu{
     opacity: 0;
     margin: 0 auto;
     width: 80%;
@@ -176,4 +176,15 @@ html{
 
 #controls-tag{
     font-size: 1.5rem;
+}
+
+.results{
+    display: none;
+    justify-content: center;
+    width: auto;
+}
+
+.game-menu > #back-button {
+    width: 100%;
+    display: none;
 }

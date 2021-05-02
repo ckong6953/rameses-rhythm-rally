@@ -43,6 +43,6 @@ const right = {
 };
 
 const song  = {
-    duration: 212,
+    duration: 20,
     tracks: [left, up, down, right],
 };
