@@ -14,6 +14,7 @@ html{
     display: flex;
     flex: 1 0 auto;
     background-color: #093049;
+    z-index: -1;
 }
 
 .game-container{
@@ -132,4 +133,47 @@ html{
     height: 10%;
     margin: 3px;
     font-size: 80%;
+}
+
+.hit-display{
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 50%;
+    left: 25%;
+    text-align: center;
+    transform: translate(-50%, 5-0%);
+}
+
+.hit-accuracy {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    font-size: 4rem;
+    color: white;
+    z-index: 10000;
+    opacity: .4;
+}
+
+.hit-combo{
+    width: 100%;
+    height: auto;
+    font-size: 4rem;
+    color: rgba(255, 199, 126, .8);
+    z-index: 10000;
+    opacity: .4;
+}
+
+.key-hit {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: 0 0 ;
+}
+
+#controls-tag{
+    font-size: 1.5rem;
 }

@@ -22,15 +22,14 @@ let hits = {
     miss: 0,
 }
 const score_multiplier = {
-    combo30: 1.05,
-    combo50: 1.10,
-    perfect: 1,
-    good: 0.8,
-    bad: 0.5,
-    miss: 0,
+    combo30: 2,
+    combo50: 3,
+    perfect: 1.5,
+    good: 1.0,
+    bad: 0.8,
+    miss: 0.0,
 }
 let isPaused = false; 
-let isPlaying = false;
 let combo = 0;
 let maxCombo = 0;
 let score = 0;
@@ -47,8 +46,9 @@ const loadGame = function () {
     $root.on("click", "#back-button", renderControlsBackMenu);
     $root.on("click","#back-button", renderLeaderboardBackMenu)
     $root.on("click","#back-button", renderGameBackMenu);
-    $root.on("click", "#pause-button", pauseNotes);
-    $root.on("click", "#resume-button", resumeNotes);
+    $root.on("change", "#volume-slider", handleVolumeControl);
+    calculateMiss();
+    handleKeys();
 }
 
 // Renders the main menu and game.
@@ -67,6 +67,11 @@ const renderInitialScreen = function (){
         </div>
     </div>
     <div class = "game-container">
+        <div class = "hit-display">
+            <div class="countdown"></div>
+            <div class="hit-combo"></div>
+            <div class="hit-accuracy"></div>
+        </div>
         <div class = "key-container">
             <div class="key" id="left-key">
                 <p>&#8592</p>
@@ -110,6 +115,7 @@ const renderControls = function(){
         $(".main-menu").replaceWith(
             `<div class = "controls-menu">
             <p id="controls-tag"> Use the arrow keys to hit the note when it approaches the keys at the top of the screen!</p>
+            Music Volume: <input type="range" id="volume-slider" value="${parseInt(document.getElementById("audio-song").volume * 100)}">
             <button type="button" class="menu-button" id="back-button">Back to Menu</button>
         </div>`);
         $(".controls-menu").fadeTo("slow",1);
@@ -125,13 +131,11 @@ const renderGameStart = function (){
         $(".main-menu").replaceWith(`<div class="game-menu">
         <h1 class="timer"></h1>
         <button type="button" class="ingame-button" id="back-button">Back to Menu</button>
-        <button type="button" class="ingame-button" id="pause-button">Pause</button>
         </div>`);
         $(".game-menu").fadeTo("slow",1);
         $(".note").css("animation-play-state","running");
 
         startTimer(song.duration);
-        document.getElementById("audio").play();
     });
 }
 
@@ -150,11 +154,26 @@ const renderGameBackMenu = function (){
             $(".main-menu").fadeIn("slow");
         });
     });
+    $('.hit-display').fadeOut("slow", function(){
+        $('.hit-display').replaceWith(
+            `<div class = "hit-display">
+                <div class="countdown"></div>
+                <div class="hit-combo"></div>
+                <div class="hit-accuracy"></div>
+            </div>`
+        );
+    });
     $(".note").fadeOut("slow");
     renderNotes();
-    document.getElementById('audio').pause();
-    document.getElementById('audio').currentTime = 0;
+    document.getElementById('audio-song').pause();
+    document.getElementById('audio-song').currentTime = 0;
     isPaused = false;
+    song.tracks.forEach(function(track){
+        track.next = 0;
+    });
+    combo = 0;
+    maxCombo = 0;
+    score = 0;
 }
 
 // Returns the user back to the main menu if they would like to return from the leaderboard.
@@ -209,20 +228,7 @@ const renderNotes = function () {
     });
 }
 
-const pauseNotes = function (){
-    $(".note").css("animation-play-state","paused");
-    $("#pause-button").replaceWith(`<button type="button" class="ingame-button" id="resume-button">Resume</button>`);
-    document.getElementById("audio").pause();
-    isPaused = true;
-}
-
-const resumeNotes = function(){
-    $(".note").css("animation-play-state","running");
-    $("#resume-button").replaceWith(`<button type="button" class="ingame-button" id="pause-button">Pause</button>`);
-    document.getElementById("audio").play();
-    isPaused = false;
-}
-
+// This function loads the timer and handles events for when the user misses a note and presses a key for a note.
 const startTimer = function (duration){
     startTime = Date.now();
     let $timer = $('.timer');
@@ -244,10 +250,10 @@ const startTimer = function (duration){
             }
         }
     },1000);
-    calculateMiss();
-    handleKeys();
+    document.getElementById("audio-song").play();
 }
 
+// function utilized to determine what key is pressed. 
 const handleKeys = function (){
     $(document).on("keydown",function(keyEvent){
         let keyPressed = findKeyIndex(keyEvent.key);
@@ -273,11 +279,21 @@ const findKeyIndex = function (keyPressed){
     }
 } 
 
+//
+const renderAccuracyDisplay = function(hit){
+    $('.hit-accuracy').attr('id',`accuracy-${hit}`);
+    $('.hit-accuracy').text(`${hit}`);
+}
+
 // Used to catch all missed notes within the game
 const calculateMiss = function (){
     $(`.track-container`).on("animationend", function (event){
-        console.log(event.target.id.charAt(5));
-        updateNextNote(event.target.id.charAt(5));
+        const keyIndex = $(event.target).parent().attr('id').charAt(6);
+        renderAccuracyDisplay('miss');
+        updateHits('miss');
+        updateCombo('miss');
+        updateMaxCombo();
+        updateNextNote(keyIndex);
         event.target.remove();
     });
 }
@@ -294,11 +310,18 @@ const calculateHit = function (keyIndex){
         return;
     }
 
-    console.log(judgeHitPrecision(accuracy));
+    const hitCalculation = judgeHitPrecision(accuracy);
+    console.log("note hit with " + hitCalculation);
+    renderAccuracyDisplay(hitCalculation);
+    updateHits(hitCalculation);
+    updateCombo(hitCalculation);
+    updateMaxCombo();
+    calculateScore(hitCalculation);
     $(`#track-${keyIndex}`).children(`#note-${nextNoteIndex}`).remove();
     updateNextNote(keyIndex);
 }
 
+// Determines how on-beat a keystroke is to the notes of teh game.
 const judgeHitPrecision = function (accuracy){
     if (accuracy < 0.1) {
         return 'perfect';
@@ -311,8 +334,48 @@ const judgeHitPrecision = function (accuracy){
     }
 }
 
+// Manipulates the global array of hits and increments to whatever was hit. 
+const updateHits = function (hitText){
+    hits[hitText]++;
+}
+
+// Manipulates the global combo count and increments it. 
+const updateCombo = function (hitText){
+    if (hitText === "miss" || hitText === "bad"){
+        combo = 0;
+        $('.hit-combo').text('');
+    }
+    else{
+        $('.hit-combo').text(++combo);
+    }
+}
+
+const updateMaxCombo = function() {
+    maxCombo = maxCombo > combo ? maxCombo : combo;
+}
+
+const calculateScore = function (hit) {
+    if (combo >= 50){
+        score += 1000 * score_multiplier[hit] * score_multiplier.combo50;
+    }
+    else if (combo >= 30){
+        score += 1000 * score_multiplier[hit] * score_multiplier.combo30;
+    }
+    else{
+        score += 1000 * score_multiplier[hit];
+    }
+}
+
+// Updates the next note of the track. 
 const updateNextNote = function (keyIndex){
     song.tracks[keyIndex].next++;
+}
+
+const handleVolumeControl = function(event){
+    const volumeLevel = event.target.value / 100;
+    document.getElementById("audio-test").volume = volumeLevel;
+    document.getElementById("audio-test").play();
+    document.getElementById("audio-song").volume = event.target.value / 100;
 }
 
 // On window load, this will render the initial state. 
