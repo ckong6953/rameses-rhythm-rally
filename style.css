@@ -185,7 +185,7 @@ html{
 }
 
 .game-menu > #back-button {
-    width: 100%;
+    width: 50%;
     display: none;
 }
 
@@ -202,4 +202,15 @@ html{
     margin-bottom: 5px;
     font-size: 80%;
     opacity: 0;
+}
+
+.results-summary {
+    font-size: larger;
+    text-decoration: underline;
+}
+
+#crowd-text{
+    text-align: center;
+    width: 60%;
+    margin: auto;
 }

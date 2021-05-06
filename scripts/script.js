@@ -431,7 +431,8 @@ const renderCrowd = async function(){
         const videoHTML = 
         `<video id="crowd-win" width="320" height="240" autoplay muted loop>
             <source src="${gifString}" type="video/mp4">
-        </video>`;
+        </video>
+        <p id="crowd-text">Good job, you got everyone riled up!</p>`;
         $(".results").append(videoHTML);
     });
 }
