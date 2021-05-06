@@ -30,15 +30,9 @@ let startTime = 0.0;
 let currentUserId = "";
 let isLoggedIn = false;
 let isEnded = false;
-
-// const firebase = require("firebase");
-// // Required for side-effects
-// require("firebase/firestore");
+let userScore = 0;
 
 let db = firebase.firestore();
-  
-
-
 
 // This is the main function that renders the initial game and handles all event handlers. 
 const loadGame = function () {
@@ -436,6 +430,9 @@ const startTimer = function (duration) {
             renderNotes();
             document.getElementById('audio-song').pause();
             document.getElementById('audio-song').currentTime = 0;
+            if (isLoggedIn){
+                userScore = score;
+            }
             const results =
                 `<div class ="results-summary"> Results Summary: </div>
                     <div class = "score">Score: ${score}</div>
