@@ -188,3 +188,18 @@ html{
     width: 100%;
     display: none;
 }
+
+#rameses-dance{
+    width: 70%;
+    opacity: 0;
+}
+
+.game-button{
+    width: 30%;
+    height: 10%;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 5px;
+    font-size: 80%;
+    opacity: 0;
+}
