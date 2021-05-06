@@ -27,7 +27,18 @@ let combo = 0;
 let maxCombo = 0;
 let score = 0;
 let startTime = 0.0;
+let currentUserId = "";
+let isLoggedIn = false;
 let isEnded = false;
+
+// const firebase = require("firebase");
+// // Required for side-effects
+// require("firebase/firestore");
+
+let db = firebase.firestore();
+  
+
+
 
 // This is the main function that renders the initial game and handles all event handlers. 
 const loadGame = function () {
@@ -35,6 +46,13 @@ const loadGame = function () {
     $root.append(renderInitialScreen())
     renderNotes();
     $root.on("click", "#play-button", renderGameStart);
+    $root.on("click", "#login-button", renderLogin);
+    $root.on("click","#signup-button", renderSignup);
+    $root.on("click", "#login-back-button", renderBackLogin);
+    $root.on("click", "#back-button", renderLoginBackMenu);
+    $root.on("click", "#back-button", renderSignupBackMenu);
+    $root.on("click", "#login-user-button", verifyLogin);
+    $root.on("click", "#signup-user-button", verifySignUp);
     $root.on("click", "#leaderboard-button", renderLeaderboard);
     $root.on("click", "#controls-button", renderControls);
     $root.on("click", "#back-button", renderControlsBackMenu);
@@ -47,10 +65,6 @@ const loadGame = function () {
     handleKeys();
 }
 
-const endGame = function() {
-    isEnded = true;
-}
-
 // Renders the main menu and game.
 const renderInitialScreen = function () {
     const gameScreen =
@@ -60,9 +74,10 @@ const renderInitialScreen = function () {
             <p id="author-tag"> by Chris Kong </p>
             <div class="main-menu">
                 <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
             </div>
         </div>
     </div>
@@ -94,6 +109,165 @@ const renderInitialScreen = function () {
         </div>
     </div>`;
     return gameScreen;
+}
+
+// This will render the UI that will prompt the user to login with
+// existing credentials. This is needed to save scores for the leaderboard.
+const renderLogin = function () {
+    $(".main-menu").fadeOut("slow", function () {
+        if (!isLoggedIn){
+            $(".main-menu").replaceWith(
+                `<div class = "login-menu">
+                    <table id="login-field">
+                        <tbody>
+                        <tr id="error-cell"><td><p id="error-message"></p></td></tr>
+                        <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="menu-button" id="login-user-button">Login</button>
+                    <button type="button" class="menu-button" id="signup-button">Sign Up Instead</button>
+                    <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+                    </div>`);
+        }
+        else{
+            $(".main-menu").replaceWith(
+                `<div class = "login-menu">
+                    <table id="login-field">
+                        <tbody>
+                        <tr id="error-cell"><td><p id="success-message">You have logged in succesfully. Go back to the main menu.</p></td></tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+                    </div>`);      
+        }
+        $(".login-menu").fadeTo("slow", 1);
+    });
+}
+
+const verifyLogin = function (){
+    const emailField = $('#email').val();
+    const passwordField = $('#password').val();
+    if (emailField == "" || emailField == " " || passwordField == "" || passwordField == " "){
+        $("#error-message").replaceWith(`<p id="error-message">Empty fields are not allowed.</p>`)
+    }
+    else{
+        firebase.auth().signInWithEmailAndPassword(emailField, passwordField)
+            .then((userCredential) => {
+                $("#error-message").replaceWith(`<p id="success-message">Login successful! Go back to the main menu.</p>`);
+                currentUserId = userCredential.user.uid;
+                isLoggedIn = true;
+                $('#email-cell').remove();
+                $('#password-cell').remove();
+                $("#login-user-button").remove();
+                $("#signup-button").remove();
+            })
+            .catch((error) => {
+                $("#error-message").replaceWith(`<p id="error-message">${error.message}</p>`)
+            });
+    }
+}
+
+// This will render the UI that will prompt the user to sign up.
+// This is needed to save scores for the leaderboard. 
+const renderSignup = function (){
+    $(".login-menu").fadeOut("slow", function () {
+        $(".login-menu").replaceWith(
+            `<div class = "signup-menu">
+                <table id="signup-field">
+                    <tbody>
+                        <tr id="error-cell"><td><p id="error-message"></p></td></tr>
+                        <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
+                        <tr id="username-cell"><td><label for = "username">Username:   </label><input id="username" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                    </tbody>
+                </table>
+                <button type="button" class="menu-button" id="signup-user-button">Sign Up</button>
+                <button type="button" class="menu-button" id="login-back-button">Login Instead</button>
+                <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+                </div>`);
+        $(".signup-menu").fadeTo("slow", 1);
+    });
+}
+
+const renderBackLogin = function (){
+    $(".signup-menu").fadeOut("slow", function () {
+        $(".signup-menu").replaceWith(
+            `<div class = "login-menu">
+                <table id="login-field">
+                    <tbody>
+                        <tr id="error-cell"><td><p id="error-message"></p></td></tr>
+                        <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                    </tbody>
+                </table>
+                <button type="button" class="menu-button" id="login-user-button">Login</button>
+                <button type="button" class="menu-button" id="signup-button">Sign Up Instead</button>
+                <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+                </div>`);
+        $(".login-menu").fadeTo("slow", 1);
+    });
+}
+
+const renderLoginBackMenu = function (){
+    $(".login-menu").fadeOut("slow", function () {
+        $(".login-menu").replaceWith(
+            `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+            </div>`);
+        $(".main-menu").fadeTo("slow", 1);
+    });
+}
+
+const renderSignupBackMenu = function (){
+    $(".signup-menu").fadeOut("slow", function () {
+        $(".signup-menu").replaceWith(
+            `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+            </div>`);
+        $(".main-menu").fadeTo("slow", 1);
+    });
+}
+
+// Verifies the user entered fields and then approves them 
+const verifySignUp = function() {
+    const emailField = $('#email').val();
+    const usernameField = $('#username').val();
+    const passwordField = $('#password').val();
+
+    if (emailField == "" || emailField == " " || usernameField == "" || usernameField == " " || passwordField == "" || passwordField == " "){
+        $("#error-message").replaceWith(`<p id="error-message">Empty fields are not allowed.</p>`)
+    }
+    else{
+        firebase.auth().createUserWithEmailAndPassword(emailField, passwordField)
+            .then((userCredential) => {
+                $("#error-message").replaceWith(`<p id="success-message">Signup and Login Successful! Go back to the main menu.</p>`)
+                db.collection("users").doc(userCredential.user.uid).set({
+                    email: emailField,
+                    username: usernameField,
+                    highscore: 0
+                });
+                currentUserId = userCredential.user.uid;
+                isLoggedIn = true;
+
+                $('#email-cell').remove();
+                $('#password-cell').remove();
+                $("#username-cell").remove();
+                $("#signup-user-button").remove();
+                $("#login-back-button").remove();
+            })
+            .catch((error) => {
+                $("#error-message").replaceWith(`<p id="error-message">${error.message}</p>`)
+            });
+    }
 }
 
 // This will render the leaderboard of the game. Not yet implemented but will contact firebase to allow user
@@ -146,6 +320,14 @@ const renderGameStart = function () {
     });
 }
 
+// If a user would like to end the game early, this ends the game. 
+const endGame = function() {
+    isEnded = true;
+    $('.note').each(function(){
+        hits.miss++;
+    })
+}
+
 // Once the game ends, i.e. the timer interval is cleared, this will render the results from the
 // user's performance. 
 const renderGameEndMenu = function () {
@@ -156,9 +338,10 @@ const renderGameEndMenu = function () {
             $(".game-menu").replaceWith(
                 `<div class="main-menu">
                             <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                            <button type="button" class="menu-button" id="login-button">Login</button>
                             <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
-                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
                         </div>`);
             $(".main-menu").fadeIn("slow");
         });
@@ -184,9 +367,10 @@ const renderLeaderboardBackMenu = function () {
         $(".leaderboard-menu").replaceWith(
             `<div class="main-menu">
                 <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });
@@ -198,9 +382,10 @@ const renderControlsBackMenu = function () {
         $(".controls-menu").replaceWith(
             `<div class="main-menu">
                 <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
-                <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! </p>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>                            
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });

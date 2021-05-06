@@ -1,0 +1,38 @@
+[debug] [2021-05-06T12:20:53.550Z] ----------------------------------------------------------------------
+[debug] [2021-05-06T12:20:53.552Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kongi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2021-05-06T12:20:53.552Z] CLI Version:   9.10.0
+[debug] [2021-05-06T12:20:53.553Z] Platform:      win32
+[debug] [2021-05-06T12:20:53.553Z] Node Version:  v14.15.4
+[debug] [2021-05-06T12:20:53.553Z] Time:          Thu May 06 2021 08:20:53 GMT-0400 (Eastern Daylight Time)
+[debug] [2021-05-06T12:20:53.553Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-05-06T12:20:53.562Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-05-06T12:20:53.562Z] > authorizing via signed-in user (ckong6953@gmail.com)
+[info] i  emulators: Starting emulators: auth {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth"}}
+[debug] [2021-05-06T12:20:53.585Z] [hub] writing locator at C:\Users\kongi\AppData\Local\Temp\hub-rameses-rhythm-rally.json
+[info] i  ui: downloading ui-v1.4.2.zip... {"metadata":{"emulator":{"name":"ui"},"message":"downloading ui-v1.4.2.zip..."}}
+[debug] [2021-05-06T12:20:55.767Z] >>> [apiv2][query] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.2.zip 
+[debug] [2021-05-06T12:20:55.907Z] <<< [apiv2][status] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.2.zip 200
+[debug] [2021-05-06T12:20:55.907Z] <<< [apiv2][body] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.2.zip [stream]
+[debug] [2021-05-06T12:20:57.888Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-05-06T12:20:57.888Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-05-06T12:20:57.889Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\kongi\\.cache\\firebase\\emulators\\ui-v1.4.2\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\kongi\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.4.2\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2021-05-06T12:20:57.987Z] Web / API server started at http://localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at http://localhost:4000\n"}}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI        │
+├────────────────┼────────────────┼────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth │
+└────────────────┴────────────────┴────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 

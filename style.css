@@ -214,3 +214,35 @@ html{
     width: 60%;
     margin: auto;
 }
+
+.signup-menu, .login-menu{    
+    opacity: 0;
+    margin: 0 auto;
+    width: 79%;
+}
+
+#signup-field, #login-field {
+    text-align: center;
+    margin: auto;
+}
+
+#error-message{
+    text-align: center;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    font-size: large; 
+    color: red;
+}
+
+#success-message{
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+    font-size: large; 
+    color: greenyellow;
+}
+
+
+
+

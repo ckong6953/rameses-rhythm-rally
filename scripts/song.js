@@ -1,3 +1,6 @@
+
+// There are a total number of 463 notes for this game.
+
 const left = {
     color: '#C24B99',
     next: 0,
