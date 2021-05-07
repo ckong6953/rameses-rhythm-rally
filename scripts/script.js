@@ -72,7 +72,6 @@ const loadGame = function () {
 
 // Renders the theme of the page (light vs dark), also saves preferences if user is logged in.
 const renderTheme = function (){
-    console.log(isLight);
     if (isLight){
         isLight = false;
         $("html").removeClass("light");
