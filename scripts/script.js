@@ -31,6 +31,7 @@ let currentUserId = "";
 let isLoggedIn = false;
 let isEnded = false;
 let userScore = 0;
+let isLight = true;
 
 let db = firebase.firestore();
 
@@ -54,8 +55,43 @@ const loadGame = function () {
     $root.on("click", "#back-button", renderGameEndMenu);
     $root.on("change", "#volume-slider", handleVolumeControl);
     $root.on("click", "#end-button", endGame);
+    $root.on("click", "#toggle-theme-button", renderTheme);
+    // $root.on("click","#light-button",)
     calculateMiss();
     handleKeys();
+}
+
+// Renders the theme of the page (light vs dark), also saves preferences if user is logged in.
+const renderTheme = function (){
+    console.log(isLight);
+    if (isLight){
+        isLight = false;
+        $("html").removeClass("light");
+        $(".track-container").removeClass("light");
+        $(".track").removeClass("light");
+        $(".menu-container").removeClass("light");
+        $(".menu-button").removeClass("light");
+        $(".hit-accuracy").removeClass("light");
+        $(".hit-combo").removeClass("light");
+    }
+    else{
+        isLight = true;
+        $("html").attr("class","light");
+        $(".track-container").addClass("light");
+        $(".track").addClass("light");
+        $(".menu-container").addClass("light");
+        $(".menu-button").addClass("light");
+        $(".hit-accuracy").addClass("light");
+        $(".hit-combo").addClass("light");
+    }
+    if (isLoggedIn){
+        db.collection("users").doc(currentUserId).get().then((doc) => {
+            const newTheme = isLight ? "light" : "dark";
+            db.collection("users").doc(currentUserId).update({
+                theme: newTheme,
+            });
+        });
+    }
 }
 
 // Renders the main menu and game.
@@ -70,8 +106,9 @@ const renderInitialScreen = function () {
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score & load theme preferences!</span>
                 <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>
         </div>
@@ -136,10 +173,14 @@ const renderLogin = function () {
                     <button type="button" class="menu-button" id="back-button">Back to Menu</button>
                     </div>`);      
         }
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
         $(".login-menu").fadeTo("slow", 1);
     });
 }
 
+// If a user has a preexisting account, they can sign in. This will load their theme preferences and their highscore.
 const verifyLogin = function (){
     const emailField = $('#email').val();
     const passwordField = $('#password').val();
@@ -151,6 +192,29 @@ const verifyLogin = function (){
             .then((userCredential) => {
                 $("#error-message").replaceWith(`<p id="success-message">Login successful! Go back to the main menu.</p>`);
                 currentUserId = userCredential.user.uid;
+                db.collection("users").doc(userCredential.user.uid).get().then((doc) => {
+                    console.log(doc.data());
+                    if(doc.data().theme == "light"){
+                        isLight = true;
+                        $("html").attr("class","light");
+                        $(".track-container").addClass("light");
+                        $(".track").addClass("light");
+                        $(".menu-container").addClass("light");
+                        $(".menu-button").addClass("light");
+                        $(".hit-accuracy").addClass("light");
+                        $(".hit-combo").addClass("light");
+                    }
+                    else{
+                        isLight = false;
+                        $("html").removeClass("light");
+                        $(".track-container").removeClass("light");
+                        $(".track").removeClass("light");
+                        $(".menu-container").removeClass("light");
+                        $(".menu-button").removeClass("light");
+                        $(".hit-accuracy").removeClass("light");
+                        $(".hit-combo").removeClass("light");
+                    }
+                });
                 isLoggedIn = true;
                 $('#email-cell').remove();
                 $('#password-cell').remove();
@@ -182,9 +246,13 @@ const renderSignup = function (){
                 <button type="button" class="menu-button" id="back-button">Back to Menu</button>
                 </div>`);
         $(".signup-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
+// If the user decides to login instead of sign up, they can do so using this function. 
 const renderBackLogin = function (){
     $(".signup-menu").fadeOut("slow", function () {
         $(".signup-menu").replaceWith(
@@ -201,9 +269,13 @@ const renderBackLogin = function (){
                 <button type="button" class="menu-button" id="back-button">Back to Menu</button>
                 </div>`);
         $(".login-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
+// Renders the landing page after going to the login menu. 
 const renderLoginBackMenu = function (){
     $(".login-menu").fadeOut("slow", function () {
         $(".login-menu").replaceWith(
@@ -212,14 +284,19 @@ const renderLoginBackMenu = function (){
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
+// Renders the landing page after going to the login menu. 
 const renderSignupBackMenu = function (){
     $(".signup-menu").fadeOut("slow", function () {
         $(".signup-menu").replaceWith(
@@ -228,11 +305,15 @@ const renderSignupBackMenu = function (){
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
@@ -248,11 +329,13 @@ const verifySignUp = function() {
     else{
         firebase.auth().createUserWithEmailAndPassword(emailField, passwordField)
             .then((userCredential) => {
+                let themeColor = isLight ? "light" : "dark";
                 $("#error-message").replaceWith(`<p id="success-message">Signup and Login Successful! Go back to the main menu.</p>`)
                 db.collection("users").doc(userCredential.user.uid).set({
                     email: emailField,
                     username: usernameField,
-                    highscore: 0
+                    highscore: 0,
+                    theme: themeColor,
                 });
                 currentUserId = userCredential.user.uid;
                 isLoggedIn = true;
@@ -327,9 +410,13 @@ const renderLeaderboard = function () {
                     </div>`);
         getLeaderboardData();
         $(".leaderboard-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
+// Gets the top 10 highscores and renders this on the leaderboard. 
 const getLeaderboardData = function (){
     db.collection("users").orderBy("highscore", "desc").get().then((querySnapshot) => {
         let counter = 0;
@@ -354,6 +441,9 @@ const renderControls = function () {
             <button type="button" class="menu-button" id="back-button">Back to Menu</button>
         </div>`);
         $(".controls-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
@@ -375,6 +465,9 @@ const renderGameStart = function () {
         
         renderVideo();
         startTimer(song.duration);
+        if(isLight){
+            $(".game-button").addClass("light");
+        }
     });
 }
 
@@ -399,11 +492,15 @@ const renderGameEndMenu = function () {
                             <button type="button" class="menu-button" id="login-button">Login</button>
                             <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
-                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                            <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                             <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                             <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
                         </div>`);
             $(".main-menu").fadeIn("slow");
+            if(isLight){
+                $(".menu-button").addClass("light");
+            }
         });
     });
     song.tracks.forEach(function (track) {
@@ -430,11 +527,15 @@ const renderLeaderboardBackMenu = function () {
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
@@ -446,12 +547,16 @@ const renderControlsBackMenu = function () {
                 <button type="button" class="menu-button" id="play-button">Play Game!</button>
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
-                <button type="button" class="menu-button" id="controls-button">Controls</button>                            
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>                            
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
+        if(isLight){
+            $(".menu-button").addClass("light");
+        }
     });
 }
 
@@ -523,6 +628,9 @@ const startTimer = function (duration) {
             renderCrowd();
             $('.results').append(results);
             $('.game-menu').append(`<button type="button" class="menu-button" id="back-button">Back to Menu</button>`);
+            if(isLight){
+                $(".menu-button").addClass("light");
+            }
             $(`#rameses-dance`).fadeOut("slow")
             $(`#end-button`).fadeOut("slow", function(){
                 $('.results').fadeIn("slow");
@@ -571,7 +679,7 @@ const findKeyIndex = function (keyPressed) {
     }
 }
 
-//
+// Renders how accurate the user's keystroke is to the note. 
 const renderAccuracyDisplay = function (hit) {
     $('.hit-accuracy').attr('id', `accuracy-${hit}`);
     $('.hit-accuracy').text(`${hit}`);
@@ -641,10 +749,12 @@ const updateCombo = function (hitText) {
     }
 }
 
+// Keeps track of the largest combo the user has managed to get playing the game. 
 const updateMaxCombo = function () {
     maxCombo = maxCombo > combo ? maxCombo : combo;
 }
 
+// Calculates the user's total score. 
 const calculateScore = function (hit) {
     if (combo >= 50) {
         score += 100 * score_multiplier[hit] * score_multiplier.combo50;
@@ -670,9 +780,9 @@ const handleVolumeControl = function (event) {
 }
 
 // These are all the Third-Party API calls that will be utilized in the game
-// Namely, one retrieves the lyrics of the song and the other lets the user post their score
-// to twitter.
+// Namely renders the gif at the end of the game and renders the video that plays during the game
 
+// This uses the GIPHY API to render in UNC football team gif.
 const renderCrowd = async function(){
     $.ajax({
         "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key=i0z0bGj1aqdUxSSQZ8AqBhhUbgG1D5FK",
@@ -688,6 +798,7 @@ const renderCrowd = async function(){
     });
 }
 
+// This uses the Youtube Data API to render the UNC Rick Roll video.
 const renderVideo = async function (){
     $.ajax({
         type: 'GET',
@@ -723,4 +834,11 @@ const renderVideo = async function (){
 // On window load, this will render the initial state. 
 $(function () {
     loadGame();
+    $("html").attr("class","light");
+    $(".track-container").addClass("light");
+    $(".track").addClass("light");
+    $(".menu-container").addClass("light");
+    $(".menu-button").addClass("light");
+    $(".hit-accuracy").addClass("light");
+    $(".hit-combo").addClass("light");
 });

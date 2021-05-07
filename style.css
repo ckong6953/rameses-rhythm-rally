@@ -2,12 +2,8 @@ html{
     background-color: #31343D;
 }
 
-.main-menu-button{
-    background-color: white;
-    margin: auto;
-    width: 50%;
-    margin: auto;
-    border: black;
+html.light{
+    background-color: #FAF8EF;
 }
 
 .track-container {
@@ -15,6 +11,10 @@ html{
     flex: 1 0 auto;
     background-color: #093049;
     z-index: -1;
+}
+
+.track-container.light {
+    background-color: #EEE4DA;
 }
 
 .game-container{
@@ -44,6 +44,10 @@ html{
     border-right: 1px solid black;
 }
 
+.track.light {
+    border-right: 1px solid #BBADA0;
+}
+
 .note{
     position: absolute;
     width: 100%;
@@ -70,7 +74,6 @@ html{
     color: white;
 }
 
-
 #left-key{
     background: #C24B99;
 }
@@ -96,11 +99,19 @@ html{
     padding-top: 10rem;
 }
 
+.menu-container.light{
+    color: black;
+}
+
 .menu-button{
     width: 60%;
     height: 10%;
     margin: 3px;
     font-size: 80%;
+}
+.menu-button.light{
+    background-color: #8F7A66;
+    color: white;
 }
 
 #about-tag{
@@ -155,6 +166,10 @@ html{
     opacity: .4;
 }
 
+.hit-accuracy.light {
+    color: #8F7A66;
+}
+
 .hit-combo{
     width: 100%;
     height: auto;
@@ -162,6 +177,10 @@ html{
     color: rgba(255, 199, 126, .8);
     z-index: 10000;
     opacity: .4;
+}
+
+.hit-combo.light{
+    color: #4B9CD3;
 }
 
 .key-hit {
@@ -204,6 +223,11 @@ html{
     opacity: 0;
 }
 
+.game-button.light{
+    background-color: #8F7A66;
+    color: white;
+}
+
 .results-summary {
     font-size: larger;
     text-decoration: underline;
@@ -235,12 +259,13 @@ html{
     color: red;
 }
 
+
 #success-message{
     text-align: center;
     margin: 0 auto;
     width: 100%;
     font-size: large; 
-    color: greenyellow;
+    color: #1DB700;
 }
 
 #leaderboard-field{
@@ -261,7 +286,7 @@ html{
 }
 
 #login-warning {
-    color: greenyellow;
+    color: #1DB700;
 }
 
 #browser-warning{
