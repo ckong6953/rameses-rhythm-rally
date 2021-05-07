@@ -53,7 +53,6 @@ const loadGame = function () {
     $root.on("click", "#back-button", renderLeaderboardBackMenu)
     $root.on("click", "#back-button", renderGameEndMenu);
     $root.on("change", "#volume-slider", handleVolumeControl);
-    $root.on("click", "#login-button", loginUser);
     $root.on("click", "#end-button", endGame);
     calculateMiss();
     handleKeys();
@@ -71,7 +70,9 @@ const renderInitialScreen = function () {
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>
         </div>
     </div>
@@ -211,7 +212,9 @@ const renderLoginBackMenu = function (){
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });
@@ -225,7 +228,9 @@ const renderSignupBackMenu = function (){
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });
@@ -270,14 +275,72 @@ const renderLeaderboard = function () {
     $(".main-menu").fadeOut("slow", function () {
         $(".main-menu").replaceWith(
             `<div class = "leaderboard-menu">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username"><br><br>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email"><br><br>
-            <button type="button" class="menu-button" id="login-button">Login</button>
-            <button type="button" class="menu-button" id="back-button">Back to Menu</button>
-            </div>`);
+                    <table id="leaderboard-field">
+                        <tbody>
+                        <tr id="leaderboard-header">
+                            <th>Username    </th>
+                            <th>Scores  </th>
+                        </tr>
+                        <tr id="user-1">
+                            <td id="username-user-1"></td>
+                            <td id="score-user-1"></td>
+                        </tr>
+                        <tr id="user-2">
+                            <td id="username-user-2"></td>
+                            <td id="score-user-2"></td>
+                        </tr>
+                        <tr id="user-3">
+                            <td id="username-user-3"></td>
+                            <td id="score-user-3"></td>
+                        </tr>
+                        <tr id="user-4">
+                            <td id="username-user-4"></td>
+                            <td id="score-user-4"></td>
+                        </tr>
+                        <tr id="user-5">
+                            <td id="username-user-5"></td>
+                            <td id="score-user-5"></td>
+                        </tr>
+                        <tr id="user-6">
+                            <td id="username-user-6"></td>
+                            <td id="score-user-6"></td>
+                        </tr>
+                        <tr id="user-7">
+                            <td id="username-user-7"></td>
+                            <td id="score-user-7"></td>
+                        </tr>
+                        <tr id="user-8">
+                            <td id="username-user-8"></td>
+                            <td id="score-user-8"></td>
+                        </tr>
+                        <tr id="user-9">
+                            <td id="username-user-9"></td>
+                            <td id="score-user-9"></td>
+                        </tr>
+                        <tr id="user-10">
+                            <td id="username-user-10"></td>
+                            <td id="score-user-10"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+                    </div>`);
+        getLeaderboardData();
         $(".leaderboard-menu").fadeTo("slow", 1);
+    });
+}
+
+const getLeaderboardData = function (){
+    db.collection("users").orderBy("highscore", "desc").get().then((querySnapshot) => {
+        let counter = 0;
+        querySnapshot.forEach((doc) => {
+            counter++;
+            $(`#user-${counter}`).replaceWith(
+                `<tr id="user-${counter}">
+                    <td id="username-user-${counter}">${doc.data().username}</td>
+                    <td id="score-user-${counter}">${doc.data().highscore}</td>
+                </tr>`);
+        });
     });
 }
 
@@ -335,7 +398,9 @@ const renderGameEndMenu = function () {
                             <button type="button" class="menu-button" id="login-button">Login</button>
                             <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
-                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                            <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
                         </div>`);
             $(".main-menu").fadeIn("slow");
         });
@@ -364,7 +429,9 @@ const renderLeaderboardBackMenu = function () {
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });
@@ -379,7 +446,9 @@ const renderControlsBackMenu = function () {
                 <button type="button" class="menu-button" id="login-button">Login</button>
                 <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>                            
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! Make sure to login/sign-up first to save your score!</p>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs to get the crowd pumped up! Hit the arrow keys on rhythm to get the best score! 
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
     });
@@ -431,7 +500,14 @@ const startTimer = function (duration) {
             document.getElementById('audio-song').pause();
             document.getElementById('audio-song').currentTime = 0;
             if (isLoggedIn){
-                userScore = score;
+                db.collection("users").doc(currentUserId).get().then((doc) => {
+                    const newScore = doc.data().highscore > score ? highscore : score; 
+                    if (newScore){
+                        db.collection("users").doc(currentUserId).update({
+                            highscore: newScore,
+                        });
+                    }
+                });
             }
             const results =
                 `<div class ="results-summary"> Results Summary: </div>
@@ -614,15 +690,10 @@ const renderCrowd = async function(){
         `<video id="crowd-win" width="320" height="240" autoplay muted loop>
             <source src="${gifString}" type="video/mp4">
         </video>
-        <p id="crowd-text">Good job, you got everyone riled up!</p>`;
+        <p id="crowd-text">You may have been rickrolled, but you rallied everyone up just in time for the game!</p>`;
         $(".results").append(videoHTML);
     });
 }
-
-// These are all firebase-related methods, i.e. pulling login requests etc.
-const loginUser = function (){
-}
-
 
 // On window load, this will render the initial state. 
 $(function () {

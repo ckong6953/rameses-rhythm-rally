@@ -243,6 +243,31 @@ html{
     color: greenyellow;
 }
 
+#leaderboard-field{
+    background-color: #4B9CD3;
+    margin: auto;
+    width: 100%;
+    border-radius: 2%;
+}
+
+#leaderboard-field th{
+    color: white;
+    font-size: large;
+}
+
+#leaderboard-field td{
+    color: white;
+    font-size: large;
+}
+
+#login-warning {
+    color: greenyellow;
+}
+
+#browser-warning{
+    color: red;
+}
+
 
 
 
