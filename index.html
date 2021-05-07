@@ -45,6 +45,13 @@
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);        
         </script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=OUR_GA_ID"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
         
+        gtag('config', 'OUR_GA_ID', {cookie_flags: 'SameSite=None;Secure'});
+        </script>
     </body>
 </html>

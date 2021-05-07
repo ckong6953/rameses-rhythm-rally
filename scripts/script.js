@@ -65,7 +65,8 @@ const loadGame = function () {
     $root.on("change", "#volume-slider", handleVolumeControl);
     $root.on("click", "#end-button", endGame);
     $root.on("click", "#toggle-theme-button", renderTheme);
-    // $root.on("click","#light-button",)
+    $root.on("click", "#signout-button", renderSignOut);
+    $root.on("click", "#back-button", renderSignOutBackMenu)
     calculateMiss();
     handleKeys();
 }
@@ -151,6 +152,47 @@ const renderInitialScreen = function () {
     return gameScreen;
 }
 
+const renderSignOut = function (){
+    firebase.auth().signOut().then(() => {
+        isLoggedIn = false;
+        const signOutString = 
+        `<div class = "signout-menu">
+        <table id="signout-field">
+            <tbody>
+            <tr id="error-cell"><td><p id="success-message">You have been signed out successfully. Go back to the main menu.</p></td></tr>
+            </tbody>
+        </table>
+        <button type="button" class="menu-button" id="back-button">Back to Menu</button>
+        </div>`;
+        $('.main-menu').fadeOut("slow", function (){
+            $('.main-menu').replaceWith(signOutString);
+            if (isLight){
+                $('.menu-button').addClass("light");
+            }
+        })
+    });
+}
+
+const renderSignOutBackMenu = function (){
+    $(".signout-menu").fadeOut("slow", function () {
+        $(".signout-menu").replaceWith(
+            `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>
+                <button type="button" class="menu-button" id="login-button">Login</button>
+                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                <button type="button" class="menu-button" id="controls-button">Controls</button>
+                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+            </div>`);
+        $(".main-menu").fadeTo("slow", 1);
+        if (isLight){
+            $('.menu-button').addClass("light");
+        }
+    });
+}
+
 // This will render the UI that will prompt the user to login with
 // existing credentials. This is needed to save scores for the leaderboard.
 const renderLogin = function () {
@@ -175,7 +217,7 @@ const renderLogin = function () {
                 `<div class = "login-menu">
                     <table id="login-field">
                         <tbody>
-                        <tr id="error-cell"><td><p id="success-message">You have logged in succesfully. Go back to the main menu.</p></td></tr>
+                        <tr id="error-cell"><td><p id="success-message">You have been logged in successfully. Go back to the main menu.</p></td></tr>
                         </tbody>
                     </table>
                     <button type="button" class="menu-button" id="back-button">Back to Menu</button>
@@ -285,17 +327,24 @@ const renderBackLogin = function (){
 // Renders the landing page after going to the login menu. 
 const renderLoginBackMenu = function (){
     $(".login-menu").fadeOut("slow", function () {
-        $(".login-menu").replaceWith(
-            `<div class="main-menu">
-                <button type="button" class="menu-button" id="play-button">Play Game!</button>
-                <button type="button" class="menu-button" id="login-button">Login</button>
-                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+        let logString = 
+        `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>`;
+                if (isLoggedIn){
+                    logString += `<button type="button" class="menu-button" id="signout-button">Sign Out</button>`;
+                }
+                else{
+                    logString += `<button type="button" class="menu-button" id="login-button">Login</button>`;
+                }
+                logString += `<button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
-            </div>`);
+            </div>`;
+        $(".login-menu").replaceWith(
+            logString);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
             $(".menu-button").addClass("light");
@@ -306,17 +355,24 @@ const renderLoginBackMenu = function (){
 // Renders the landing page after going to the login menu. 
 const renderSignupBackMenu = function (){
     $(".signup-menu").fadeOut("slow", function () {
-        $(".signup-menu").replaceWith(
-            `<div class="main-menu">
-                <button type="button" class="menu-button" id="play-button">Play Game!</button>
-                <button type="button" class="menu-button" id="login-button">Login</button>
-                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+        let signString = 
+        `<div class="main-menu">
+                <button type="button" class="menu-button" id="play-button">Play Game!</button>`;
+                if (isLoggedIn){
+                    signString += `<button type="button" class="menu-button" id="signout-button">Sign Out</button>`;
+                }
+                else{
+                    signString += `<button type="button" class="menu-button" id="login-button">Login</button>`;
+                }
+                signString += `<button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                 <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
-            </div>`);
+            </div>`
+        $(".signup-menu").replaceWith(
+            signString);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
             $(".menu-button").addClass("light");
