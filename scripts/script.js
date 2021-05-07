@@ -117,7 +117,7 @@ const renderLogin = function () {
                         <tbody>
                         <tr id="error-cell"><td><p id="error-message"></p></td></tr>
                         <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
-                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="password"></td></tr>
                         </tbody>
                     </table>
                     <button type="button" class="menu-button" id="login-user-button">Login</button>
@@ -174,7 +174,7 @@ const renderSignup = function (){
                         <tr id="error-cell"><td><p id="error-message"></p></td></tr>
                         <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
                         <tr id="username-cell"><td><label for = "username">Username:   </label><input id="username" type="text"></td></tr>
-                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="password"></td></tr>
                     </tbody>
                 </table>
                 <button type="button" class="menu-button" id="signup-user-button">Sign Up</button>
@@ -193,7 +193,7 @@ const renderBackLogin = function (){
                     <tbody>
                         <tr id="error-cell"><td><p id="error-message"></p></td></tr>
                         <tr id="email-cell"><td><label for = "email">Email: </label><input id="email" type="text"></td></tr>
-                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="text"></td></tr>
+                        <tr id="password-cell"><td><label for = "password">Password:   </label><input id="password" type="password"></td></tr>
                     </tbody>
                 </table>
                 <button type="button" class="menu-button" id="login-user-button">Login</button>
@@ -367,12 +367,13 @@ const renderGameStart = function () {
             `<div class="game-menu">
             <h1 class="timer"></h1>
             <button type="button" class="game-button" id="end-button">End Game</button>
-            <img id="rameses-dance" src="../other/rameses.gif">
+            <div id="video"></div>
             <div class="results"></div>
         </div>`);
         $(".game-menu").fadeTo("slow", 1);
         $(".note").css("animation-play-state", "running");
-
+        
+        renderVideo();
         startTimer(song.duration);
     });
 }
@@ -454,6 +455,7 @@ const renderControlsBackMenu = function () {
     });
 }
 
+
 // Will render all the notes of the song first with them being initiall hidden but all the animations have been pre-rendered. 
 const renderNotes = function () {
     $('.track-container').empty();
@@ -509,6 +511,7 @@ const startTimer = function (duration) {
                     }
                 });
             }
+            $("#video").fadeOut("slow");
             const results =
                 `<div class ="results-summary"> Results Summary: </div>
                     <div class = "score">Score: ${score}</div>
@@ -670,16 +673,6 @@ const handleVolumeControl = function (event) {
 // Namely, one retrieves the lyrics of the song and the other lets the user post their score
 // to twitter.
 
-const getLyrics = async function (){
-    $.ajax({
-        "url": "https://api.lyrics.ovh/v1/Rick Astley/Never Gonna Give You Up",
-        "method": "GET",
-    }).then(function(response){
-        let songLyrics = `<div class="song-lyrics">${response.lyrics}</div>`;
-        $('.game-menu').append(songLyrics);
-    });
-}
-
 const renderCrowd = async function(){
     $.ajax({
         "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key=i0z0bGj1aqdUxSSQZ8AqBhhUbgG1D5FK",
@@ -693,6 +686,38 @@ const renderCrowd = async function(){
         <p id="crowd-text">You may have been rickrolled, but you rallied everyone up just in time for the game!</p>`;
         $(".results").append(videoHTML);
     });
+}
+
+const renderVideo = async function (){
+    $.ajax({
+        type: 'GET',
+        url: 'https://www.googleapis.com/youtube/v3/videos',
+        data: {
+            key: 'AIzaSyBl6L5MgY21iOkIgCjw6qaM4mnMskxRLD0',
+            id: "HMUEHyVJzXM",
+            part: "player",
+            maxResults: 1,
+            type: 'video',
+            videoEmbeddable: true,
+        },
+        success: function(data){
+            let videoLink = data.items[0].player.embedHtml;
+            let fields = videoLink.split(/[\"]/);
+            fields = fields.filter(function(part){
+                return part.includes("youtube.com")
+            });
+            const videoTag = 
+            `<div id="video"><iframe id="ytplayer" type="text/html" width="480" height="270"
+            src="${fields[0]}?autoplay=1&mute=1&controls=0&playlist=HMUEHyVJzXM&loop=1&modestbranding=1&enablejsapi=1"
+            frameborder="0"></iframe></div>`;
+            $('#video').fadeIn("slow", function(){
+                $("#video").replaceWith(videoTag);
+            });
+        },
+        error: function(response){
+            console.log("Request Failed");
+        }
+      });
 }
 
 // On window load, this will render the initial state. 
