@@ -9,6 +9,8 @@
  */
 
 // These are a list of global variables that will be utilized throughout the game.
+
+import { config } from "../config.js";
 let hits = {
     perfect: 0,
     good: 0,
@@ -784,7 +786,7 @@ const handleVolumeControl = function (event) {
 // This uses the GIPHY API to render in UNC football team gif.
 const renderCrowd = async function(){
     $.ajax({
-        "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key=i0z0bGj1aqdUxSSQZ8AqBhhUbgG1D5FK",
+        "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key="+ config.GIPHY_KEY,
         "method": "GET",
     }).then(function(response){
         const gifString = response.data.images.original.mp4;
@@ -805,7 +807,7 @@ const renderVideo = async function (){
         type: 'GET',
         url: 'https://www.googleapis.com/youtube/v3/videos',
         data: {
-            key: 'AIzaSyBl6L5MgY21iOkIgCjw6qaM4mnMskxRLD0',
+            key: config.YOUTUBE_KEY,
             id: "HMUEHyVJzXM",
             part: "player",
             maxResults: 1,
