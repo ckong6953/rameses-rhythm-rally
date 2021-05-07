@@ -549,17 +549,25 @@ const renderGameEndMenu = function () {
         $("#rameses-dance").fadeOut("slow");
         $("#game-title").fadeIn("slow");
         $("#author-tag").fadeIn("slow", function () {
-            $(".game-menu").replaceWith(
-                `<div class="main-menu">
-                            <button type="button" class="menu-button" id="play-button">Play Game!</button>
-                            <button type="button" class="menu-button" id="login-button">Login</button>
-                            <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+            let backMenu = 
+            `<div class="main-menu">
+                            <button type="button" class="menu-button" id="play-button">Play Game!</button>`
+                            if (isLoggedIn){
+                                backMenu += `<button type="button" class="menu-button" id="signout-button">Sign Out</button>`;
+                            }
+                            else {
+                                backMenu += `<button type="button" class="menu-button" id="login-button">Login</button>`;
+                            }
+                            backMenu +=
+                            `<button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
                             <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                             <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                             <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
                             <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
-                        </div>`);
+                        </div>`
+            $(".game-menu").replaceWith(
+                backMenu);
             $(".main-menu").fadeIn("slow");
             if(isLight){
                 $(".menu-button").addClass("light");
@@ -584,17 +592,25 @@ const renderGameEndMenu = function () {
 // Returns the user back to the main menu if they would like to return from the leaderboard.
 const renderLeaderboardBackMenu = function () {
     $(".leaderboard-menu").fadeOut("slow", function () {
-        $(".leaderboard-menu").replaceWith(
+        let backMenu = 
             `<div class="main-menu">
-                <button type="button" class="menu-button" id="play-button">Play Game!</button>
-                <button type="button" class="menu-button" id="login-button">Login</button>
-                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
-                <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
-            </div>`);
+                            <button type="button" class="menu-button" id="play-button">Play Game!</button>`
+                            if (isLoggedIn){
+                                backMenu += `<button type="button" class="menu-button" id="signout-button">Sign Out</button>`;
+                            }
+                            else {
+                                backMenu += `<button type="button" class="menu-button" id="login-button">Login</button>`;
+                            }
+                            backMenu +=
+                            `<button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                            <button type="button" class="menu-button" id="controls-button">Controls</button>
+                            <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                        </div>`
+            $(".leaderboard-menu").replaceWith(
+                backMenu);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
             $(".menu-button").addClass("light");
@@ -605,17 +621,25 @@ const renderLeaderboardBackMenu = function () {
 // Returns the user back to the main menu if they would like to return from the controls. 
 const renderControlsBackMenu = function () {
     $(".controls-menu").fadeOut("slow", function () {
-        $(".controls-menu").replaceWith(
+        let backMenu = 
             `<div class="main-menu">
-                <button type="button" class="menu-button" id="play-button">Play Game!</button>
-                <button type="button" class="menu-button" id="login-button">Login</button>
-                <button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
-                <button type="button" class="menu-button" id="controls-button">Controls</button>
-                <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>                            
-                <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen (F11 mode) </span> </p>
-            </div>`);
+                            <button type="button" class="menu-button" id="play-button">Play Game!</button>`
+                            if (isLoggedIn){
+                                backMenu += `<button type="button" class="menu-button" id="signout-button">Sign Out</button>`;
+                            }
+                            else {
+                                backMenu += `<button type="button" class="menu-button" id="login-button">Login</button>`;
+                            }
+                            backMenu +=
+                            `<button type="button" class="menu-button" id="leaderboard-button">Leaderboard</button>
+                            <button type="button" class="menu-button" id="controls-button">Controls</button>
+                            <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
+                            <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                        </div>`
+            $(".controls-menu").replaceWith(
+                backMenu);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
             $(".menu-button").addClass("light");
