@@ -109,7 +109,7 @@ const renderInitialScreen = function () {
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score & load theme preferences!</span>
-                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
             </div>
         </div>
     </div>
@@ -193,7 +193,6 @@ const verifyLogin = function (){
                 $("#error-message").replaceWith(`<p id="success-message">Login successful! Go back to the main menu.</p>`);
                 currentUserId = userCredential.user.uid;
                 db.collection("users").doc(userCredential.user.uid).get().then((doc) => {
-                    console.log(doc.data());
                     if(doc.data().theme == "light"){
                         isLight = true;
                         $("html").attr("class","light");
@@ -287,7 +286,7 @@ const renderLoginBackMenu = function (){
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
@@ -308,7 +307,7 @@ const renderSignupBackMenu = function (){
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
@@ -495,7 +494,7 @@ const renderGameEndMenu = function () {
                             <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                             <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                             <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                            <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
                         </div>`);
             $(".main-menu").fadeIn("slow");
             if(isLight){
@@ -530,7 +529,7 @@ const renderLeaderboardBackMenu = function () {
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
@@ -551,7 +550,7 @@ const renderControlsBackMenu = function () {
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>                            
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
                 <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> Performance is best in Firefox! </span> </p>
+                <br><span id="browser-warning"> *Best played in fullscreen (F11 mode) </span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
         if(isLight){
@@ -618,7 +617,7 @@ const startTimer = function (duration) {
             }
             $("#video").fadeOut("slow");
             const results =
-                `<div class ="results-summary"> Results Summary: </div>
+                `<div class ="results-summary"> <p id="results-header">Results Summary: </p></div>
                     <div class = "score">Score: ${score}</div>
                     <div class = "max-combo">Max Combo: ${maxCombo}</div>
                     <div class = "perfect-hit">Perfect: ${hits.perfect}</div>
@@ -795,7 +794,9 @@ const renderCrowd = async function(){
         </video>
         <p id="crowd-text">You may have been rickrolled, but you rallied everyone up just in time for the game!</p>`;
         $(".results").append(videoHTML);
-    });
+    }).catch((error) => {
+        console.log(error)
+    })
 }
 
 // This uses the Youtube Data API to render the UNC Rick Roll video.

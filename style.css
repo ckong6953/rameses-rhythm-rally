@@ -201,6 +201,7 @@ html.light{
     display: none;
     justify-content: center;
     width: auto;
+    font-size: x-large;
 }
 
 .game-menu > #back-button {
@@ -304,5 +305,8 @@ html.light{
     font-size: medium;
 }
 
+#results-header{
+    font-size:xx-large;
+}
 
 
