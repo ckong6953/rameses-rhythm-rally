@@ -9,8 +9,6 @@
  */
 
 // These are a list of global variables that will be utilized throughout the game.
-
-import { config } from "../config.js";
 let hits = {
     perfect: 0,
     good: 0,
@@ -36,6 +34,15 @@ let userScore = 0;
 let isLight = true;
 
 let db = firebase.firestore();
+
+let YOUTUBE_KEY = "";
+let GIPHY_KEY = "";
+db.collection("keys").doc("keys").get().then((doc)=>{
+    YOUTUBE_KEY = doc.data().YOUTUBE_KEY;
+    GIPHY_KEY = doc.data().GIPHY_KEY;
+});
+
+
 
 // This is the main function that renders the initial game and handles all event handlers. 
 const loadGame = function () {
@@ -786,7 +793,7 @@ const handleVolumeControl = function (event) {
 // This uses the GIPHY API to render in UNC football team gif.
 const renderCrowd = async function(){
     $.ajax({
-        "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key="+ config.GIPHY_KEY,
+        "url": "https://api.giphy.com/v1/gifs/l0NhWHDm0mmp1cY00?api_key="+ GIPHY_KEY,
         "method": "GET",
     }).then(function(response){
         const gifString = response.data.images.original.mp4;
@@ -807,7 +814,7 @@ const renderVideo = async function (){
         type: 'GET',
         url: 'https://www.googleapis.com/youtube/v3/videos',
         data: {
-            key: config.YOUTUBE_KEY,
+            key: YOUTUBE_KEY,
             id: "HMUEHyVJzXM",
             part: "player",
             maxResults: 1,
