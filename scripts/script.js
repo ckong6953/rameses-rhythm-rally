@@ -117,8 +117,8 @@ const renderInitialScreen = function () {
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score & load theme preferences!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
             </div>
         </div>
     </div>
@@ -183,8 +183,8 @@ const renderSignOutBackMenu = function (){
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
             </div>`);
         $(".main-menu").fadeTo("slow", 1);
         if (isLight){
@@ -340,8 +340,8 @@ const renderLoginBackMenu = function (){
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
             </div>`;
         $(".login-menu").replaceWith(
             logString);
@@ -368,8 +368,8 @@ const renderSignupBackMenu = function (){
                 <button type="button" class="menu-button" id="controls-button">Controls</button>
                 <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                 <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score! 
-                <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
             </div>`
         $(".signup-menu").replaceWith(
             signString);
@@ -563,8 +563,8 @@ const renderGameEndMenu = function () {
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
                             <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                             <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
                         </div>`
             $(".game-menu").replaceWith(
                 backMenu);
@@ -606,8 +606,8 @@ const renderLeaderboardBackMenu = function () {
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
                             <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                             <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
                         </div>`
             $(".leaderboard-menu").replaceWith(
                 backMenu);
@@ -635,8 +635,8 @@ const renderControlsBackMenu = function () {
                             <button type="button" class="menu-button" id="controls-button">Controls</button>
                             <button type="button" class="menu-button" id="toggle-theme-button">Toggle Theme</button>
                             <p id="about-tag"> About: It’s the night of the big game, and Rameses needs your help to get the crowd pumped up! Hit the arrow keys on beat to get the best score!
-                            <br><span id="login-warning"> Make sure to login/sign-up first to save your score!</span>
-                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode) </span> </p>
+                            <br><span id="login-warning"> Make sure to login/sign-up first to save your highscore & load theme preferences!</span>
+                            <br><span id="browser-warning"> *Best played in fullscreen! (F11 mode), please disable any AdBlockers as well. Thank you.</span> </p>
                         </div>`
             $(".controls-menu").replaceWith(
                 backMenu);
@@ -695,7 +695,7 @@ const startTimer = function (duration) {
             document.getElementById('audio-song').currentTime = 0;
             if (isLoggedIn){
                 db.collection("users").doc(currentUserId).get().then((doc) => {
-                    const newScore = doc.data().highscore > score ? highscore : score; 
+                    const newScore = doc.data().highscore > score ? doc.data().highscore : score; 
                     if (newScore){
                         db.collection("users").doc(currentUserId).update({
                             highscore: newScore,
