@@ -408,6 +408,26 @@ const verifySignUp = function() {
                 $("#username-cell").remove();
                 $("#signup-user-button").remove();
                 $("#login-back-button").remove();
+                if(themeColor == "light"){
+                    isLight = true;
+                    $("html").attr("class","light");
+                    $(".track-container").addClass("light");
+                    $(".track").addClass("light");
+                    $(".menu-container").addClass("light");
+                    $(".menu-button").addClass("light");
+                    $(".hit-accuracy").addClass("light");
+                    $(".hit-combo").addClass("light");
+                }
+                else{
+                    isLight = false;
+                    $("html").removeClass("light");
+                    $(".track-container").removeClass("light");
+                    $(".track").removeClass("light");
+                    $(".menu-container").removeClass("light");
+                    $(".menu-button").removeClass("light");
+                    $(".hit-accuracy").removeClass("light");
+                    $(".hit-combo").removeClass("light");
+                }
             })
             .catch((error) => {
                 $("#error-message").replaceWith(`<p id="error-message">${error.message}</p>`)
